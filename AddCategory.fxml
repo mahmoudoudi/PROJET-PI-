@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import java.lang.*?>
+<?import java.net.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.AddCategoryController">
+   <children>
+      <TextField fx:id="namecategorytf" layoutX="40.0" layoutY="98.0" promptText="Name Category" />
+      <TextField fx:id="descriptioncategorytf" layoutX="47.0" layoutY="175.0" promptText="Description Category" />
+      <TableView fx:id="tabc" layoutX="226.0" layoutY="48.0" prefHeight="214.0" prefWidth="366.0">
+        <columns>
+          <TableColumn fx:id="idc" prefWidth="75.0" text="Id Category" />
+          <TableColumn fx:id="namec" prefWidth="110.0" text="Name Category" />
+            <TableColumn fx:id="desc" prefWidth="180.0" text="Description Category" />
+        </columns>
+      </TableView>
+      <Button fx:id="update" layoutX="29.0" layoutY="321.0" mnemonicParsing="false" onAction="#updateaction" prefHeight="25.0" prefWidth="96.0" style="-fx-background-color: blue; -fx-font-family: Quicksand; -fx-text-fill: white; -fx-font-weight: bold;" text="Update" />
+      <Button fx:id="delete" layoutX="148.0" layoutY="321.0" mnemonicParsing="false" onAction="#deleteaction" prefHeight="25.0" prefWidth="96.0" style="-fx-background-color: black; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-family: Quicksand;" text="Delete" />
+      <Button fx:id="add" layoutX="29.0" layoutY="237.0" mnemonicParsing="false" onAction="#addaction" prefHeight="25.0" prefWidth="96.0" style="-fx-background-color: green; -fx-text-fill: white; -fx-font-family: Quicksand; -fx-font-weight: bold;" text="Add" />
+      <Button fx:id="reset" layoutX="148.0" layoutY="237.0" mnemonicParsing="false" onAction="#resaction" style="-fx-background-color: red; -fx-text-fill: white; -fx-font-family: Quicksand; -fx-font-weight: bold;" text="Reset" />
+   </children>
+</AnchorPane>
