@@ -34,7 +34,7 @@ public class ServiceProduct {
     pre.setString(3, p.getDescriptionProduct());
     pre.setInt(4, p.getQuantityProduct());
     pre.setFloat(5, p.getPriceProduct());
-    pre.setFloat(6, p.getPromotion());
+    pre.setFloat(6, 0);
     pre.executeUpdate();
     }
         

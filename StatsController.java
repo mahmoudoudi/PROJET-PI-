@@ -99,8 +99,8 @@ public class StatsController implements Initializable {
         x=(x/a)*100.00;
         y=(y/a)*100.00;
         pieChartData = FXCollections.observableArrayList(
-                new PieChart.Data("Product Without Promotion "+df.format(x), x),
-                new PieChart.Data("Product Without Promotion "+df.format(y), y));
+                new PieChart.Data("Product Without Promotion "+df.format(x)+"%", x),
+                new PieChart.Data("Product Without Promotion "+df.format(y)+"%", y));
        statsp.setData(pieChartData);
     }    
 

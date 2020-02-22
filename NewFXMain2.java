@@ -48,7 +48,7 @@ public class NewFXMain2 extends Application {
 //        primaryStage.show();
             Parent root = FXMLLoader.load(getClass().getResource("stats.fxml"));
             Scene scene =new Scene(root);
-            primaryStage.setTitle("add category");
+            primaryStage.setTitle("Stats");
             primaryStage.setScene(scene);
             primaryStage.show();
         } catch (IOException ex) {

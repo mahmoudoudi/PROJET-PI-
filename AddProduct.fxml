@@ -8,13 +8,13 @@
 
 <AnchorPane id="AnchorPane" prefHeight="469.0" prefWidth="747.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.AddProductController">
    <children>
-      <Label layoutX="45.0" layoutY="32.0" text="Add Product" />
-      <TextField fx:id="namecategorytf" layoutX="21.0" layoutY="75.0" prefHeight="25.0" prefWidth="173.0" promptText="Name Category" />
-      <TextField fx:id="nameproducttf" layoutX="21.0" layoutY="119.0" prefHeight="25.0" prefWidth="173.0" promptText="Name Product" />
-      <TextField fx:id="pricetf" layoutX="26.0" layoutY="264.0" prefHeight="25.0" prefWidth="173.0" promptText="Price" />
-      <TextField fx:id="desctf" layoutX="22.0" layoutY="168.0" prefHeight="25.0" prefWidth="173.0" promptText="Description Product" />
-      <TextField fx:id="quantitytf" layoutX="21.0" layoutY="216.0" prefHeight="25.0" prefWidth="173.0" promptText="Quantité" />
-      <TextField fx:id="promotiontf" layoutX="26.0" layoutY="311.0" prefHeight="25.0" prefWidth="173.0" promptText="Promotion" />
+      <Label layoutX="14.0" layoutY="14.0" text="Add Product" />
+      <TextField fx:id="namecategorytf" layoutX="20.0" layoutY="42.0" prefHeight="25.0" prefWidth="173.0" promptText="Name Category" />
+      <TextField fx:id="nameproducttf" layoutX="22.0" layoutY="75.0" prefHeight="25.0" prefWidth="173.0" promptText="Name Product" />
+      <TextField fx:id="pricetf" layoutX="22.0" layoutY="180.0" prefHeight="25.0" prefWidth="173.0" promptText="Price" />
+      <TextField fx:id="desctf" layoutX="22.0" layoutY="109.0" prefHeight="25.0" prefWidth="173.0" promptText="Description Product" />
+      <TextField fx:id="quantitytf" layoutX="20.0" layoutY="146.0" prefHeight="25.0" prefWidth="173.0" promptText="Quantité" />
+      <TextField fx:id="promotiontf" layoutX="22.0" layoutY="214.0" prefHeight="25.0" prefWidth="173.0" promptText="Promotion" />
       <TableView fx:id="tablep" layoutX="221.0" layoutY="42.0" prefHeight="326.0" prefWidth="515.0">
         <columns>
           <TableColumn fx:id="idt" prefWidth="75.0" text="Id Product" />
@@ -34,11 +34,14 @@
       <Button fx:id="Reset" layoutX="616.0" layoutY="394.0" mnemonicParsing="false" onAction="#Reset" text="Reset" />
       <Button fx:id="ShowPromotion" layoutX="279.0" layoutY="394.0" mnemonicParsing="false" onAction="#ShowPromotion" text="Promotion" />
       <Label fx:id="namecategorylabe" layoutX="20.0" layoutY="100.0" prefHeight="17.0" prefWidth="173.0" />
-      <Label fx:id="nameproductlabel" layoutX="22.0" layoutY="144.0" prefHeight="17.0" prefWidth="173.0" />
-      <Label fx:id="quantitelabel" layoutX="22.0" layoutY="247.0" prefHeight="17.0" prefWidth="173.0" />
+      <Label fx:id="nameproductlabel" layoutX="34.0" layoutY="150.0" prefHeight="17.0" prefWidth="173.0" />
+      <Label fx:id="quantitelabel" layoutX="109.0" layoutY="226.0" prefHeight="17.0" prefWidth="173.0" />
       <Label fx:id="pricelabel" layoutX="26.0" layoutY="289.0" prefHeight="17.0" prefWidth="173.0" />
       <Label fx:id="promotionlabel" layoutX="26.0" layoutY="336.0" prefHeight="17.0" prefWidth="173.0" />
       <Button fx:id="Stats" layoutX="674.0" layoutY="394.0" mnemonicParsing="false" onAction="#LocationStats" text="Stats" />
       <ComboBox fx:id="listecat" layoutX="231.0" layoutY="14.0" onAction="#listecat" prefWidth="150.0" />
+      <Button fx:id="BUploadPic" layoutX="134.0" layoutY="250.0" mnemonicParsing="false" onAction="#UploadPic" prefHeight="5.0" prefWidth="73.0" text="Upload Pic" />
+      <TextField fx:id="pictf" layoutX="20.0" layoutY="250.0" prefHeight="25.0" prefWidth="123.0" />
+      <Button fx:id="pdf" layoutX="214.0" layoutY="395.0" mnemonicParsing="false" onAction="#pdfaction" text="PDF" />
    </children>
 </AnchorPane>

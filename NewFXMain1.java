@@ -48,7 +48,7 @@ public class NewFXMain1 extends Application {
 //        primaryStage.show();
             Parent root = FXMLLoader.load(getClass().getResource("AddProduct.fxml"));
             Scene scene =new Scene(root);
-            primaryStage.setTitle("add category");
+            primaryStage.setTitle("Add Product");
             primaryStage.setScene(scene);
             primaryStage.show();
         } catch (IOException ex) {
