@@ -3,119 +3,105 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package Entities;
+package com.mycompany.myapp.entities;
 
 /**
  *
- * @author MPSHOP
+ * @author jelas
  */
 public class Product {
-    private int IdProduct;
-    private String NameCategory, NameProduct, DescriptionProduct;
-    private int QuantityProduct;
-    private float PriceProduct, Promotion;
+    int idproduct,quantityproduct;
+    String namecategory,nameproduct,descriptionproduct;
+    float priceproduct,promotion;
 
-    public Product(String NameCategory, String NameProduct, String DescriptionProduct, int QuantityProduct, float PriceProduct, float Promotion) {
-        this.NameCategory = NameCategory;
-        this.NameProduct = NameProduct;
-        this.DescriptionProduct = DescriptionProduct;
-        this.QuantityProduct = QuantityProduct;
-        this.PriceProduct = PriceProduct;
-        this.Promotion = Promotion;
+    public Product(int idproduct, int quantityproduct, String namecategory, String nameproduct, String descriptionproduct, float priceproduct, float promotion) {
+        this.idproduct = idproduct;
+        this.quantityproduct = quantityproduct;
+        this.namecategory = namecategory;
+        this.nameproduct = nameproduct;
+        this.descriptionproduct = descriptionproduct;
+        this.priceproduct = priceproduct;
+        this.promotion = promotion;
     }
 
-    public Product(int IdProduct, String NameCategory, String NameProduct, String DescriptionProduct, int QuantityProduct, float PriceProduct, float Promotion) {
-        this.IdProduct = IdProduct;
-        this.NameCategory = NameCategory;
-        this.NameProduct = NameProduct;
-        this.DescriptionProduct = DescriptionProduct;
-        this.QuantityProduct = QuantityProduct;
-        this.PriceProduct = PriceProduct;
-        this.Promotion = Promotion;
+    public Product(int quantityproduct, String namecategory, String nameproduct, String descriptionproduct, float priceproduct, float promotion) {
+        this.quantityproduct = quantityproduct;
+        this.namecategory = namecategory;
+        this.nameproduct = nameproduct;
+        this.descriptionproduct = descriptionproduct;
+        this.priceproduct = priceproduct;
+        this.promotion = promotion;
     }
 
-    public int getIdProduct() {
-        return IdProduct;
+    public Product(int idproduct) {
+        this.idproduct = idproduct;
     }
 
-    public void setIdProduct(int IdProduct) {
-        this.IdProduct = IdProduct;
+    public Product() {
+    }
+
+    public int getIdproduct() {
+        return idproduct;
+    }
+
+    public void setIdproduct(int idproduct) {
+        this.idproduct = idproduct;
     }
     
-    
 
-    public String getNameCategory() {
-        return NameCategory;
+   
+
+    public int getQuantityproduct() {
+        return quantityproduct;
     }
 
-    public String getNameProduct() {
-        return NameProduct;
+    public void setQuantityproduct(int quantityproduct) {
+        this.quantityproduct = quantityproduct;
     }
 
-    public String getDescriptionProduct() {
-        return DescriptionProduct;
+    public String getNamecategory() {
+        return namecategory;
     }
 
-    public int getQuantityProduct() {
-        return QuantityProduct;
+    public void setNamecategory(String namecategory) {
+        this.namecategory = namecategory;
     }
 
-    public float getPriceProduct() {
-        return PriceProduct;
+    public String getNameproduct() {
+        return nameproduct;
+    }
+
+    public void setNameproduct(String nameproduct) {
+        this.nameproduct = nameproduct;
+    }
+
+    public String getDescriptionproduct() {
+        return descriptionproduct;
+    }
+
+    public void setDescriptionproduct(String descriptionproduct) {
+        this.descriptionproduct = descriptionproduct;
+    }
+
+    public float getPriceproduct() {
+        return priceproduct;
+    }
+
+    public void setPriceproduct(float priceproduct) {
+        this.priceproduct = priceproduct;
     }
 
     public float getPromotion() {
-        return Promotion;
+        return promotion;
     }
 
-    public void setNameCategory(String NameCategory) {
-        this.NameCategory = NameCategory;
-    }
-
-    public void setNameProduct(String NameProduct) {
-        this.NameProduct = NameProduct;
-    }
-
-    public void setDescriptionProduct(String DescriptionProduct) {
-        this.DescriptionProduct = DescriptionProduct;
-    }
-
-    public void setQuantityProduct(int QuantityProduct) {
-        this.QuantityProduct = QuantityProduct;
-    }
-
-    public void setPriceProduct(float PriceProduct) {
-        this.PriceProduct = PriceProduct;
-    }
-
-    public void setPromotion(float Promotion) {
-        this.Promotion = Promotion;
+    public void setPromotion(float promotion) {
+        this.promotion = promotion;
     }
 
     @Override
     public String toString() {
-        return "Product{" + "NameCategory=" + NameCategory + ", NameProduct=" + NameProduct + ", DescriptionProduct=" + DescriptionProduct + ", QuantityProduct=" + QuantityProduct + ", PriceProduct=" + PriceProduct + ", Promotion=" + Promotion + '}';
+        return "Product{" + "idproduct=" + idproduct + ", quantityproduct=" + quantityproduct + ", namecategory=" + namecategory + ", nameproduct=" + nameproduct + ", descriptionproduct=" + descriptionproduct + ", priceproduct=" + priceproduct + ", promotion=" + promotion + '}';
     }
-     public int toStringid() {
-       return IdProduct;
-     }
-     public String toStringNameCategory() {
-       return NameCategory;
-     }
-     public String toStringNameProduct() {
-       return NameProduct;
-     }
-     public String toStringDescriptionProduct() {
-       return DescriptionProduct;
-     }
-     public int toStringQuantityProduct() {
-       return QuantityProduct;
-     }
-     public float toStringPriceProduct() {
-       return PriceProduct;
-     }
-     public float toStringPromotion() {
-       return Promotion;
-     }
     
 }

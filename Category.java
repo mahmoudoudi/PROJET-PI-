@@ -3,62 +3,56 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package Entities;
+package com.mycompany.myapp.entities;
 
 /**
  *
- * @author MPSHOP
+ * @author jelas
  */
 public class Category {
-    int IdCategory;
-    private String NameCategory, DescriptionCategory;
+    int idcategory;
+    String namecategory,descriptioncategory;
 
-    public Category(String NameCategory, String DescriptionCategory) {
-        this.NameCategory = NameCategory;
-        this.DescriptionCategory = DescriptionCategory;
+    public Category() {
     }
 
-    public Category(String NameCategory) {
-        this.NameCategory = NameCategory;
+    public Category(int idcategory) {
+        this.idcategory = idcategory;
     }
 
-    public Category (int IdCategory, String NameCategory, String DescriptionCategory) {
-        this.IdCategory = IdCategory;
-        this.NameCategory = NameCategory;
-        this.DescriptionCategory = DescriptionCategory;
+    public Category(int idcategory, String namecategory, String descriptioncategory) {
+        this.idcategory = idcategory;
+        this.namecategory = namecategory;
+        this.descriptioncategory = descriptioncategory;
     }
 
-    public int getIdCategory() {
-        return IdCategory;
+    public int getIdcategory() {
+        return idcategory;
     }
 
-    public String getNameCategory() {
-        return NameCategory;
+    public void setIdcategory(int idcategory) {
+        this.idcategory = idcategory;
     }
 
-    public String getDescriptionCategory() {
-        return DescriptionCategory;
+    public String getNamecategory() {
+        return namecategory;
     }
 
-    public void setIdCategory(int IdCategory) {
-        this.IdCategory = IdCategory;
+    public void setNamecategory(String namecategory) {
+        this.namecategory = namecategory;
     }
 
-    public void setNameCategory(String NameCategory) {
-        this.NameCategory = NameCategory;
+    public String getDescriptioncategory() {
+        return descriptioncategory;
     }
 
-    public void setDescriptionCategory(String DescriptionCategory) {
-        this.DescriptionCategory = DescriptionCategory;
+    public void setDescriptioncategory(String descriptioncategory) {
+        this.descriptioncategory = descriptioncategory;
     }
 
-
-
-    
-    public int toString1() {
-        return  IdCategory;
+    @Override
+    public String toString() {
+        return "Category{" + "idcategory=" + idcategory + ", namecategory=" + namecategory + ", descriptioncategory=" + descriptioncategory + '}';
     }
-    
-    
     
 }
