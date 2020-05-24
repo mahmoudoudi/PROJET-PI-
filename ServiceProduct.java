@@ -3,265 +3,161 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package Service;
+package com.mycompany.myapp.services;
 
-import Entities.Category;
-import Utilis.DataBase;
-import Entities.Product;
-import java.sql.*;
+import com.codename1.io.CharArrayReader;
+import com.codename1.io.ConnectionRequest;
+import com.codename1.io.JSONParser;
+import com.codename1.io.NetworkEvent;
+import com.codename1.io.NetworkManager;
+import com.codename1.ui.events.ActionListener;
+import com.mycompany.myapp.entities.Product;
+import com.mycompany.myapp.utils.Statics;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  *
- * @author MPSHOP
+ * @author jelas
  */
 public class ServiceProduct {
-    private final Connection con;
-    private Statement ste;
+      public ArrayList<Product> product;
+    public  String  result="";
+    public static ServiceProduct instance=null;
+    public boolean resultOK;
+    private ConnectionRequest req;
 
-    public ServiceProduct() {
-        con = DataBase.getInstance().getConnection();
-          
-
-}
-      
-    public void ajouter1(Product p) throws SQLException
-    {
-    PreparedStatement pre=con.prepareStatement("INSERT INTO `hooks`.`product` ( `IdProduct`, `NameCategory`, `NameProduct`, `DescriptionProduct`, `QuantityProduct`, `PriceProduct`, `Promotion`) VALUES ( NULL, ?, ?, ?, ?, ?, ?);");
-    pre.setString(1, p.getNameCategory());
-    pre.setString(2, p.getNameProduct());
-    pre.setString(3, p.getDescriptionProduct());
-    pre.setInt(4, p.getQuantityProduct());
-    pre.setFloat(5, p.getPriceProduct());
-    pre.setFloat(6, 0);
-    pre.executeUpdate();
-    }
-        
-     public boolean delete(int i) throws SQLException {
-          PreparedStatement pre=con.prepareStatement("delete from product WHERE IdProduct='"+i+"';");
-            pre.executeUpdate();
-            return true;
+    private ServiceProduct() {
+         req = new ConnectionRequest();
     }
 
-    public boolean update(String a) throws SQLException {
-      
-        PreparedStatement pre=con.prepareStatement("UPDATE product SET NameProduct= '" + a + "'  WHERE IdProduct=13 ;");
-            pre.executeUpdate();
+    public static ServiceProduct getInstance() {
+        if (instance == null) {
+            instance = new ServiceProduct();
+        }
+        return instance;
+    }
+    
+    public ArrayList<Product> parseproduct(String jsonText){
+        try {
+            product=new ArrayList<>();
+            JSONParser j = new JSONParser();
+            Map<String,Object> tasksListJson = j.parseJSON(new CharArrayReader(jsonText.toCharArray()));
+            List<Map<String,Object>> list = (List<Map<String,Object>>)tasksListJson.get("root");
+            
+            for(Map<String,Object> obj : list){
+                //Création des tâches et récupération de leurs données
+                Product p = new Product();
+                p.setIdproduct((int)Float.parseFloat(obj.get("idproduct").toString()));
+                p.setNamecategory((obj.get("namecategory").toString()));
+                p.setNameproduct(obj.get("nameproduct").toString());
+                p.setDescriptionproduct(obj.get("descriptionproduct").toString());
+                p.setQuantityproduct((int)Float.parseFloat(obj.get("quantityproduct").toString()));
+                p.setPriceproduct(Float.parseFloat(obj.get("priceproduct").toString()));
+                p.setPromotion(Float.parseFloat(obj.get("promotion").toString()));
+                //Ajouter la tâche extraite de la réponse Json à la liste
+                product.add(p);
+            }
+            
+            
+        } catch (IOException ex) {
+            
+        }
        
-        return true;
+        return product;
     }
     
-
-    public boolean update1(Product p, int i) throws SQLException {
-            boolean test=false;
-            PreparedStatement pre= con.prepareStatement(  "UPDATE product SET NameCategory= ?,  NameProduct= ?, DescriptionProduct= ?, QuantityProduct= ?, PriceProduct= ? ,Promotion= ? WHERE IdProduct='"+i+"';");
-            pre.setString(1, p.getNameCategory());
-    pre.setString(2, p.getNameProduct());
-    pre.setString(3, p.getDescriptionProduct());
-    pre.setInt(4, p.getQuantityProduct());
-    pre.setFloat(5, p.getPriceProduct());
-    pre.setFloat(6, p.getPromotion());
-    pre.executeUpdate();
-            return true;
-    }
-    public int stats1() throws SQLException {
-   
-    ste=con.createStatement();
-  
-    ResultSet rs=ste.executeQuery("select count(*) AS total from product WHERE Promotion >0");
-
-
-      while (rs.next())
-      {
-          int count=rs.getInt("total");
-             return count;
-      } 
-        return 0;
-
-    }
-    public int stats2() throws SQLException {
-   
-    ste=con.createStatement();
-  
-    ResultSet rs=ste.executeQuery("select count(*) AS total from product WHERE Promotion =0");
-
-
-      while (rs.next())
-      {
-          int count=rs.getInt("total");
-             return count;
-      } 
-        return 0;
-
+       public ArrayList<Product> getAllProduct(){
+        String url = Statics.BASE_URL+"ListProductMobile";
+        req.setUrl(url);
+        req.setPost(false);
+        req.addResponseListener(new ActionListener<NetworkEvent>() {
+            @Override
+            public void actionPerformed(NetworkEvent evt) {
+                product = parseproduct(new String(req.getResponseData()));
+                req.removeResponseListener(this);
+            }
+        });
+        NetworkManager.getInstance().addToQueueAndWait(req);     
+                return product;
+       }
+    
+    public boolean addProduct(Product t) {
+        String url = Statics.BASE_URL3 + "/product/new?namecategory=" + t.getNamecategory()+
+                "&nameproduct=" + t.getNameproduct()+
+                "&descriptionproduct="+t.getDescriptionproduct()+
+                "&quantityproduct=" + t.getQuantityproduct()
+                +"&priceproduct=" + t.getPriceproduct()+ 
+                "&promotion=" + t.getPriceproduct(); //création de l'URL
+        req.setUrl(url);// Insertion de l'URL de notre demande de connexion
+        req.addResponseListener(new ActionListener<NetworkEvent>() {
+            @Override
+            public void actionPerformed(NetworkEvent evt) {
+                resultOK = req.getResponseCode() == 200; //Code HTTP 200 OK
+                req.removeResponseListener(this); //Supprimer cet actionListener
+                /* une fois que nous avons terminé de l'utiliser.
+                La ConnectionRequest req est unique pour tous les appels de 
+                n'importe quelle méthode du Service task, donc si on ne supprime
+                pas l'ActionListener il sera enregistré et donc éxécuté même si 
+                la réponse reçue correspond à une autre URL(get par exemple)*/
+                
+            }
+        });
+        NetworkManager.getInstance().addToQueueAndWait(req);
+        return resultOK;
     }
     
-    public int statsA() throws SQLException {
-   
-    ste=con.createStatement();
-  
-    ResultSet rs=ste.executeQuery("select count(*) AS total from product");
+    
+    public String DeleteProduct(Product d) {
+          String url = Statics.BASE_URL + "deleteProductMobile/?idproduct=" + d.getIdproduct();
+          
+        req.setUrl(url);// Insertion de l'URL de notre demande de connexion
+        System.out.println(url);
+                   
 
+        req.addResponseListener(new ActionListener<NetworkEvent>() {
+            @Override
+            public void actionPerformed(NetworkEvent evt) {
 
-      while (rs.next())
-      {
-          int count=rs.getInt("total");
-             return count;
-      } 
-        return 0;
+                try {
+                    String data = new String(req.getResponseData());
+                    JSONParser j = new JSONParser();
+                    Map<String, Object> tasksListJson;
+                    tasksListJson = j.parseJSON(new CharArrayReader(data.toCharArray()));
+                   result=(String) tasksListJson.get("body");
 
-    }
-    public List<String> combo() throws SQLException {
-    List<String> arr=new ArrayList<>();
-    ste=con.createStatement();
-    ResultSet rs=ste.executeQuery("select NameCategory from category");
-     while (rs.next()) {                
-               String NameCategory=rs.getString(1);
- 
-              
-               arr.add(NameCategory);
-     }
-    return arr;
-    }
-    public List<Product> readAll() throws SQLException {
-    List<Product> arr=new ArrayList<>();
-    ste=con.createStatement();
-    ResultSet rs=ste.executeQuery("select * from product");
-     while (rs.next()) {                
-               int IdProduct=rs.getInt(1);
-               String NameCategory=rs.getString("NameCategory");
-               String NameProduct=rs.getString("NameProduct");
-               String DescriptionProduct=rs.getString("DescriptionProduct");
-               int QuantityProduct=rs.getInt("QuantityProduct");
-               float PriceProduct=rs.getFloat("PriceProduct");
-               float Promotion=rs.getFloat("Promotion");
-             
-               
-               
-               Product p=new Product (IdProduct, NameCategory, NameProduct, DescriptionProduct, QuantityProduct, PriceProduct, Promotion);
-     arr.add(p);
-     }
-    return arr;
+                } catch (IOException ex) {
+                    ex.getMessage();
+                }
+                req.removeResponseListener(this);
+
+            }
+        });
+        NetworkManager.getInstance().addToQueueAndWait(req);
+        return result;
     }
     
-public List<Product> selectitem(int i) throws SQLException {
-    List<Product> arr=new ArrayList<>();
-    ste=con.createStatement();
-    ResultSet rs=ste.executeQuery("select * from productWHERE IdProduct='"+i+"';");
-     while (rs.next()) {                
-               int IdProduct=rs.getInt(1);
-               String NameCategory=rs.getString("NameCategory");
-               String NameProduct=rs.getString("NameProduct");
-               String DescriptionProduct=rs.getString("DescriptionProduct");
-               int QuantityProduct=rs.getInt("QuantityProduct");
-               float PriceProduct=rs.getFloat("PriceProduct");
-               float Promotion=rs.getFloat("Promotion");
-             
-               
-               
-               Product p=new Product (IdProduct, NameCategory, NameProduct, DescriptionProduct, QuantityProduct, PriceProduct, Promotion);
-     arr.add(p);
-     }
-    return arr;
+    public boolean EditProduct(Product d) {
+        String url = Statics.BASE_URL + "EditProductMobile/?idproduct="+d.getIdproduct()
+                +"&namecategory=" + d.getNamecategory()
+                +"&nameproduct=" + d.getNameproduct()
+                +"&descriptionproduct="+d.getDescriptionproduct()
+                +"&quantityproduct="+d.getQuantityproduct()
+                +"&priceproduct="+d.getPriceproduct()
+                +"&promotion="+d.getPromotion()
+               ;
+            System.out.println(url);
+        req.setUrl(url);// Insertion de l'URL de notre demande de connexion
+        req.addResponseListener(new ActionListener<NetworkEvent>() {
+            @Override
+            public void actionPerformed(NetworkEvent evt) {
+                resultOK = req.getResponseCode() == 200; 
+                req.removeResponseListener(this);
+            }
+        });
+        NetworkManager.getInstance().addToQueueAndWait(req);
+        return resultOK;
     }
-    
-    public void ajouter(Product t) throws SQLException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    
-    public boolean update(Product t) throws SQLException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-    
-    public List<Product> recherche(String aa) throws SQLException{
-         List<Product> fish=new ArrayList<>();
-         ste=con.createStatement();
-        ResultSet rs=ste.executeQuery("Select * from product where NameProduct like '%" + aa + "%' ;");
-           while (rs.next()) {                
-               int IdProduct=rs.getInt(1);
-               String NameCategory=rs.getString("NameCategory");
-               String NameProduct=rs.getString("NameProduct");
-               String DescriptionProduct=rs.getString("DescriptionProduct");
-               int QuantityProduct=rs.getInt("QuantityProduct");
-               float PriceProduct=rs.getFloat("PriceProduct");
-               float Promotion=rs.getFloat("Promotion");
-               
-               
-               Product p=new Product(NameCategory, NameProduct, DescriptionProduct, QuantityProduct, PriceProduct, Promotion);
-     fish.add(p);
-     }
-        return fish;
-    }
-    
-    public List<Product> promo() throws SQLException{
-         List<Product> fish=new ArrayList<>();
-         ste=con.createStatement();
-        ResultSet rs=ste.executeQuery("Select * from product where Promotion>0.00;");
-           while (rs.next()) {                
-               int IdProduct=rs.getInt(1);
-               String NameCategory=rs.getString("NameCategory");
-               String NameProduct=rs.getString("NameProduct");
-               String DescriptionProduct=rs.getString("DescriptionProduct");
-               int QuantityProduct=rs.getInt("QuantityProduct");
-               float PriceProduct=rs.getFloat("PriceProduct");
-               float Promotion=rs.getFloat("Promotion");
-              
-               
-               
-               Product x=new Product(IdProduct, NameCategory, NameProduct, DescriptionProduct, QuantityProduct, PriceProduct, Promotion);
-     fish.add(x);
-     }
-        return fish;
-    }
-    
-     public List<Product> triL() throws SQLException{
-         List<Product> fish=new ArrayList<>();
-         ste=con.createStatement();
-        ResultSet rs=ste.executeQuery("Select * from product order by PriceProduct;");
-           while (rs.next()) {                
-               int IdProduct=rs.getInt(1);
-               String NameCategory=rs.getString("NameCategory");
-               String NameProduct=rs.getString("NameProduct");
-               String DescriptionProduct=rs.getString("DescriptionProduct");
-               int QuantityProduct=rs.getInt("QuantityProduct");
-               float PriceProduct=rs.getFloat("PriceProduct");
-               float Promotion=rs.getFloat("Promotion");
-              
-               
-               
-               Product x=new Product(IdProduct, NameCategory, NameProduct, DescriptionProduct, QuantityProduct, PriceProduct, Promotion);
-     fish.add(x);
-     }
-        return fish;
-    }
-     
-     
-     
-    public List<Product> triH() throws SQLException{
-         List<Product> fish=new ArrayList<>();
-         ste=con.createStatement();
-        ResultSet rs=ste.executeQuery("Select * from product order by PriceProduct desc;");
-           while (rs.next()) {                
-               int IdProduct=rs.getInt(1);
-               String NameCategory=rs.getString("NameCategory");
-               String NameProduct=rs.getString("NameProduct");
-               String DescriptionProduct=rs.getString("DescriptionProduct");
-               int QuantityProduct=rs.getInt("QuantityProduct");
-               float PriceProduct=rs.getFloat("PriceProduct");
-               float Promotion=rs.getFloat("Promotion");
-              
-               
-               
-               Product x=new Product(IdProduct, NameCategory, NameProduct, DescriptionProduct, QuantityProduct, PriceProduct, Promotion);
-     fish.add(x);
-     }
-        return fish;
-    }
-
-    public void like() {
-    }
-   
-
-
 }

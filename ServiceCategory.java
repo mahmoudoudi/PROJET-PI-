@@ -3,124 +3,156 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package Service;
+package com.mycompany.myapp.services;
 
-
-import Utilis.DataBase;
-import Entities.Category;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import com.codename1.io.CharArrayReader;
+import com.codename1.io.ConnectionRequest;
+import com.codename1.io.JSONParser;
+import com.codename1.io.NetworkEvent;
+import com.codename1.io.NetworkManager;
+import com.codename1.ui.events.ActionListener;
+import com.mycompany.myapp.entities.Category;
+import com.mycompany.myapp.utils.Statics;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  *
- * @author MPSHOP
+ * @author jelas
  */
 public class ServiceCategory {
-    
-    private final Connection con;
-    private Statement ste;
+     public ArrayList<Category> category;
+    public  String  result="";
+    public static ServiceCategory instance=null;
+    public boolean resultOK;
+    private ConnectionRequest req;
 
-    public ServiceCategory() {
-        con = DataBase.getInstance().getConnection();
-
-}
-  public void ajouter1(Category c) throws SQLException
-    {
-    PreparedStatement pre=con.prepareStatement("INSERT INTO `hooks`.`category` (`IdCategory`, `NameCategory`, `DescriptionCategory`) VALUES ( NULL, ?, ?);");
-    
-    pre.setString(1, c.getNameCategory());
-    pre.setString(2, c.getDescriptionCategory());
-    pre.executeUpdate();
+    private ServiceCategory() {
+         req = new ConnectionRequest();
     }
+
+    public static ServiceCategory getInstance() {
+        if (instance == null) {
+            instance = new ServiceCategory();
+        }
+        return instance;
+    }
+    
+    public ArrayList<Category> parsecategory(String jsonText){
+        try {
+            category=new ArrayList<>();
+            JSONParser j = new JSONParser();
+            Map<String,Object> tasksListJson = j.parseJSON(new CharArrayReader(jsonText.toCharArray()));
+            List<Map<String,Object>> list = (List<Map<String,Object>>)tasksListJson.get("root");
             
-     
-    public boolean delete(int i) throws SQLException {
-          PreparedStatement pre=con.prepareStatement("delete from category WHERE IdCategory='"+i+"';");
-            pre.executeUpdate();
-            return true;
-    }
-
-    public boolean updateN(String a, int i) throws SQLException {
-      
-        PreparedStatement pre=con.prepareStatement("UPDATE category SET NameCategory= '" + a + "'  WHERE IdCategory='"+i+"';");
-            pre.executeUpdate();
+            for(Map<String,Object> obj : list){
+                //Création des tâches et récupération de leurs données
+                Category c = new Category();
+                c.setIdcategory((int)Float.parseFloat(obj.get("idcategory").toString()));
+                c.setNamecategory((obj.get("namecategory").toString()));
+                c.setDescriptioncategory((obj.get("descriptioncategory").toString()));
+           
+                
+                //Ajouter la tâche extraite de la réponse Json à la liste
+                category.add(c);
+            }
+            
+            
+        } catch (IOException ex) {
+            
+        }
        
-        return true;
+        return category;
     }
-      public boolean updateD(String a, int i) throws SQLException {
-      
-        PreparedStatement pre=con.prepareStatement("UPDATE category SET DescriptionCategory= '" + a + "'  WHERE IdCategory='"+i+"';");
-            pre.executeUpdate();
+   
+    
+       public ArrayList<Category> getAllCategory(){
+        String url = Statics.BASE_URL+"ListCategoryMobile";
+        req.setUrl(url);
+        req.setPost(false);
+        req.addResponseListener(new ActionListener<NetworkEvent>() {
+            @Override
+            public void actionPerformed(NetworkEvent evt) {
+                category = parsecategory(new String(req.getResponseData()));
+                req.removeResponseListener(this);
+            }
+        });
+        NetworkManager.getInstance().addToQueueAndWait(req);     
+                return category;
+       }
+        
        
-        return true;
-    }
-
-
-    public List<Category> readAll() throws SQLException {
-    List<Category> arr=new ArrayList<>();
-    ste=con.createStatement();
-    ResultSet rs=ste.executeQuery("select * from category");
-     while (rs.next()) {  
-
-         int IdCategory=rs.getInt(1);  
-         String NameCategory=rs.getString("NameCategory");
-               String DescriptionCategory=rs.getString("DescriptionCategory");
-       Category c=new Category(IdCategory, NameCategory, DescriptionCategory);
-     arr.add(c);
-     }
-    return arr;
-    }
-
     
-    public void ajouter(Category t) throws SQLException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    
-    public boolean update(Category t) throws SQLException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public boolean addCategory(Category t) {
+        String url = "http://localhost/pi/web/app_dev.php/category/new?namecategory=" + t.getNamecategory()+ "&descriptioncategory=" + t.getDescriptioncategory(); //création de l'URL
+        req.setUrl(url);// Insertion de l'URL de notre demande de connexion
+        req.addResponseListener(new ActionListener<NetworkEvent>() {
+            @Override
+            public void actionPerformed(NetworkEvent evt) {
+                resultOK = req.getResponseCode() == 200; //Code HTTP 200 OK
+                req.removeResponseListener(this); //Supprimer cet actionListener
+                /* une fois que nous avons terminé de l'utiliser.
+                La ConnectionRequest req est unique pour tous les appels de 
+                n'importe quelle méthode du Service task, donc si on ne supprime
+                pas l'ActionListener il sera enregistré et donc éxécuté même si 
+                la réponse reçue correspond à une autre URL(get par exemple)*/
+                
+            }
+        });
+        NetworkManager.getInstance().addToQueueAndWait(req);
+        return resultOK;
     }
     
-    public List<Category> recherche(String aa) throws SQLException{
-         List<Category> fish=new ArrayList<>();
-         ste=con.createStatement();
-        ResultSet rs=ste.executeQuery("Select * from category where NameCategory like '%" + aa + "%' ;");
-           while (rs.next()) {                
-            
-               String NameCategory=rs.getString("NameCategory");
-               String DescriptionCategory=rs.getString("DescriptionCategory");
-             
-               
-               
-               Category c=new Category(NameCategory, DescriptionCategory);
-     fish.add(c);
-     }
-        return fish;
+    
+    public String DeleteCategory(Category d){
+          String url = Statics.BASE_URL + "deleteCategoryMobile/?idcategory=" + d.getIdcategory();
+          
+        req.setUrl(url);// Insertion de l'URL de notre demande de connexion
+        System.out.println(url);
+                   
+
+        req.addResponseListener(new ActionListener<NetworkEvent>() {
+            @Override
+            public void actionPerformed(NetworkEvent evt) {
+
+                try {
+                    String data = new String(req.getResponseData());
+                    JSONParser j = new JSONParser();
+                    Map<String, Object> tasksListJson;
+                    tasksListJson = j.parseJSON(new CharArrayReader(data.toCharArray()));
+                   result=(String) tasksListJson.get("body");
+
+                } catch (IOException ex) {
+                    ex.getMessage();
+                }
+                req.removeResponseListener(this);
+
+            }
+        });
+        NetworkManager.getInstance().addToQueueAndWait(req);
+        return result;
     }
     
-    public List<Category> trieln() throws SQLException{
-         List<Category> fish=new ArrayList<>();
-         ste=con.createStatement();
-        ResultSet rs=ste.executeQuery("Select * from category order by length(NameCategory) desc;");
-           while (rs.next()) {                
-            
-               String NameCategory=rs.getString("NameCategory");
-               String DescriptionCategory=rs.getString("DescriptionCategory");
+    public boolean EditCategory(Category d) {
+        String url = Statics.BASE_URL + "EditCategoryMobile/?idcategory="+d.getIdcategory()
+                +"&namecategory=" + d.getNamecategory()
+                + "&descriptioncategory=" + d.getDescriptioncategory();
+                
                
-              
-               
-               
-               Category x=new Category(NameCategory, DescriptionCategory);
-     fish.add(x);
-     }
-        return fish;
+            System.out.println(url);
+        req.setUrl(url);// Insertion de l'URL de notre demande de connexion
+        req.addResponseListener(new ActionListener<NetworkEvent>() {
+            @Override
+            public void actionPerformed(NetworkEvent evt) {
+                resultOK = req.getResponseCode() == 200; 
+                req.removeResponseListener(this);
+            }
+        });
+        NetworkManager.getInstance().addToQueueAndWait(req);
+        return resultOK;
     }
-
-    public void like() {
-    } 
+    
+    
 }
